@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Massage Clinic System - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <img src="logo.png" alt="Clinic Logo" class="logo">
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="booking.html">New Booking</a>
+                <a href="customers.html">Customers</a>
+                <a href="dashboard.html">Earnings</a>
+            </div>
+        </nav>
+
+        <header class="dashboard-header">
+            <h2 id="live-date">Loading date...</h2>
+            <p>Welcome back, Receptionist</p>
+        </header>
+
+        <section class="status-grid">
+            <div class="status-card">
+                <h3>Therapist A</h3>
+                <span class="badge available">Available</span>
+            </div>
+            <div class="status-card busy">
+                <h3>Therapist B</h3>
+                <span class="badge working">In Treatment</span>
+                <small>Ends at 18:30</small>
+            </div>
+            <div class="status-card">
+                <h3>Therapist C</h3>
+                <span class="badge available">Available</span>
+            </div>
+            <div class="status-card">
+                <h3>Therapist D</h3>
+                <span class="badge break">On Break</span>
+            </div>
+        </section>
+
+        <section class="upcoming-appointments">
+            <h3>Today's Schedule</h3>
+            <ul class="appointment-list">
+                <li>
+                    <span class="time">17:00</span>
+                    <span class="name">John Smith</span>
+                    <span class="therapist-tag">Therapist B</span>
+                </li>
+                <li>
+                    <span class="time">18:30</span>
+                    <span class="name">Emma Watson</span>
+                    <span class="therapist-tag">Therapist A</span>
+                </li>
+            </ul>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

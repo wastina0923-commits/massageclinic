@@ -1,0 +1,321 @@
+/* --- Root Variables Update --- */
+:root {
+    --bg-color: #FFFDF6;       /* Cream background */
+    --card-bg: #FFFFFF;        /* Content background */
+    --primary-text: #4E342E;   /* Deep Brown */
+    --secondary-text: #8D6E63; /* Muted Brown */
+    --border-color: #F3E5F5;   /* Very light line */
+    --accent-color: #D7CCC8;   /* Soft Beige-Grey */
+    --highlight: #5D4037;      /* Darker Brown for buttons */
+    
+    /* New Brand Colors */
+    --nav-bg: #243936;         /* Deep Forest Green from Logo */
+    --nav-text: #EFEBE9;       /* Light cream-grey for nav links */
+}
+
+/* --- Global Styles --- */
+body {
+    background-color: var(--bg-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--primary-text);
+    margin: 0;
+    padding: 20px; /* 增加頁面邊距，讓 container 浮起來 */
+    display: flex;
+    justify-content: center;
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--card-bg);
+    min-height: 100vh;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-radius: 15px;
+    overflow: hidden; /* 確保內部深色導覽列的圓角能與 container 貼合 */
+    position: relative;
+}
+
+/* --- Navbar & Logo (Full-width deep green bar) --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--nav-bg);
+    
+    /* 讓背景顏色填滿整條並抵消 container padding */
+    margin: -40px -40px 40px -40px; 
+    padding: 20px 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+    display: block;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--nav-text);
+    margin-left: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #FFFFFF;
+    opacity: 1;
+    border-bottom: 2px solid #FFFFFF;
+    padding-bottom: 5px;
+}
+
+/* --- Typography --- */
+header h1 {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--secondary-text);
+    margin-bottom: 40px;
+}
+
+/* --- Form Layout --- */
+.form-section {
+    margin-bottom: 40px;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.form-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--secondary-text);
+    margin-bottom: 20px;
+    border-left: 3px solid var(--highlight);
+    padding-left: 10px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Adjust for 3 columns in payment section */
+section:last-of-type .grid-inputs {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--primary-text);
+}
+
+input, select {
+    padding: 14px;
+    border: 1px solid #E0E0E0;
+    border-radius: 10px;
+    background-color: #FAFAFA;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--highlight);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(93, 64, 55, 0.05);
+}
+
+.readonly-input {
+    background-color: #F5F5F5;
+    color: var(--highlight);
+    font-weight: bold;
+    border: 1px dashed var(--accent-color);
+}
+
+/* --- Button --- */
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    background-color: var(--highlight);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(93, 64, 55, 0.2);
+}
+
+/* --- Table Styles for Customers Page --- */
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background-color: #FFFFFF;
+}
+
+.styled-table th {
+    background-color: var(--bg-color);
+    color: var(--secondary-text);
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+}
+
+.styled-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.styled-table tr:hover {
+    background-color: #FFFEFA;
+}
+
+/* --- Search Box --- */
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.search-box input {
+    flex: 1;
+    border: 1px solid var(--accent-color);
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    background-color: var(--highlight);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* --- Dashboard Summary Cards --- */
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.summary-card {
+    background: #FFFEFA;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.summary-card h3 {
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.summary-card .amount {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--primary-text);
+    margin: 10px 0;
+}
+
+.highlight-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--accent-color);
+}
+
+.status-paid {
+    background-color: #FFF3E0;
+    color: #E65100;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.dashboard-footer {
+    margin-top: 40px;
+    text-align: right;
+}
+
+/* --- Payment Method Tags --- */
+.pay-method {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.pay-method.card {
+    background-color: #E3F2FD;
+    color: #1976D2;
+}
+
+.pay-method.cash {
+    background-color: #F1F8E9;
+    color: #388E3C;
+}
+
+/* --- Print Friendly Styles --- */
+@media print {
+    .navbar, .submit-btn { display: none; }
+    .container { box-shadow: none; max-width: 100%; border-radius: 0; padding: 0; }
+    .navbar { margin: 0; }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 600px) {
+    .grid-inputs {
+        grid-template-columns: 1fr !important;
+    }
+    .container {
+        padding: 20px;
+    }
+    .navbar {
+        flex-direction: column;
+        gap: 20px;
+        margin: -20px -20px 20px -20px; /* 調整手機版的 margin */
+        padding: 20px;
+    }
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

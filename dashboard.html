@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Massage Clinic - Financial Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <img src="logo.png" alt="Clinic Logo" class="logo">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="booking.html">New Booking</a>
+                <a href="customers.html">Customers</a>
+                <a href="dashboard.html" class="active">Earnings</a>
+            </div>
+        </nav>
+
+        <header>
+            <h1>Daily Earnings</h1>
+            <p class="subtitle" id="dashboard-date">Financial summary for today</p>
+        </header>
+
+        <section class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Revenue</h3>
+                <p class="amount" id="totalRevenue">$0.00</p>
+                <small>Gross sales before commission</small>
+            </div>
+            <div class="summary-card highlight-card">
+                <h3>Total Gap (Cash/Card)</h3>
+                <p class="amount" id="totalGap">$0.00</p>
+                <small>Actual money received in-store</small>
+            </div>
+            <div class="summary-card">
+                <h3>Insurance Claims</h3>
+                <p class="amount" id="totalInsurance">$0.00</p>
+                <small>HICAPS / Private Health</small>
+            </div>
+        </section>
+
+        <section class="staff-commissions">
+            <h3>Therapist Payouts (Calculated at 45%-50%)</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Therapist</th>
+                        <th>Customers</th>
+                        <th>Total Generated</th>
+                        <th>Net Earnings</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="earningsTableBody">
+                    <tr>
+                        <td>Therapist A (45%)</td>
+                        <td>3</td>
+                        <td>$330.00</td>
+                        <td><strong>$148.50</strong></td>
+                        <td><span class="status-paid">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>Therapist C (50%)</td>
+                        <td>2</td>
+                        <td>$220.00</td>
+                        <td><strong>$110.00</strong></td>
+                        <td><span class="status-paid">Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer class="dashboard-footer">
+            <button class="submit-btn" onclick="window.print()">Print Daily Report</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
