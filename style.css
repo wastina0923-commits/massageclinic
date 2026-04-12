@@ -389,6 +389,54 @@ input:focus, select:focus {
     color: #388E3C;
 }
 
+/* --- Action Buttons --- */
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.edit-btn {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
+
+.edit-btn:hover {
+    background-color: #C8E6C9;
+}
+
+.delete-btn {
+    background-color: #FFEBEE;
+    color: #D32F2F;
+}
+
+.delete-btn:hover {
+    background-color: #FFCDD2;
+}
+
+/* --- Badge Styles --- */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.badge.available {
+    background-color: #C8E6C9;
+    color: #2E7D32;
+}
+
+.badge.in-treatment {
+    background-color: #FFE082;
+    color: #F57F17;
+}
+
 /* --- Print Friendly Styles --- */
 @media print {
     .navbar, .submit-btn { display: none; }

@@ -215,6 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             
+            // Get current time in HH:MM format
+            const currentHours = String(today.getHours()).padStart(2, '0');
+            const currentMinutes = String(today.getMinutes()).padStart(2, '0');
+            const currentTime = `${currentHours}:${currentMinutes}`;
+            
             // Filter bookings for today and selected therapists
             const todaysBookings = bookings.filter(b => 
                 b.appointmentDate === todayStr && selectedTherapists.includes(b.therapist)
@@ -233,10 +238,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const therapistBookings = todaysBookings.filter(b => b.therapist === therapistName);
                 
+                // Sort bookings by appointment time (earliest first, latest last)
+                therapistBookings.sort((a, b) => {
+                    const timeA = a.appointmentTime.split(':').map(Number);
+                    const timeB = b.appointmentTime.split(':').map(Number);
+                    return (timeA[0] * 60 + timeA[1]) - (timeB[0] * 60 + timeB[1]);
+                });
+                
+                // Check if therapist is currently in treatment
+                let isInTreatment = false;
+                therapistBookings.forEach(b => {
+                    const appointmentStart = b.appointmentTime;
+                    const appointmentEnd = b.endTime;
+                    if (appointmentStart <= currentTime && currentTime < appointmentEnd) {
+                        isInTreatment = true;
+                    }
+                });
+                
+                // Update status badge
+                const badge = card.querySelector('.badge');
+                if (badge) {
+                    if (isInTreatment) {
+                        badge.textContent = 'In Treatment';
+                        badge.className = 'badge in-treatment';
+                    } else {
+                        badge.textContent = 'Available';
+                        badge.className = 'badge available';
+                    }
+                }
+                
                 if (therapistBookings.length > 0) {
                     bookingsList.innerHTML = therapistBookings.map(b => `
                         <div class="booking-item">
-                            <small>${b.appointmentTime} - ${b.customerName}</small>
+                            <small>${formatTime(b.appointmentTime)} - ${formatTime(b.endTime)} ${b.customerName}</small>
                         </div>
                     `).join('');
                 } else {
@@ -298,6 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Load saved therapists on page load
         loadSelectedTherapists();
+        
+        // Refresh therapist bookings every minute to update status
+        setInterval(loadTherapistBookings, 60000);
     }
 
 
@@ -310,6 +347,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    // Function to format time with proper leading zeros
+    function formatTime(timeString) {
+        if (!timeString) return '';
+        // Ensure time format is HH:MM with leading zeros
+        const parts = timeString.split(':');
+        if (parts.length >= 2) {
+            const hours = String(parts[0]).padStart(2, '0');
+            const minutes = String(parts[1]).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+        return timeString;
     }
 
     // Function to format treatment names
@@ -348,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         customerTableBody.innerHTML = bookings.map(booking => {
-            const timeRange = booking.endTime ? `${booking.appointmentTime} - ${booking.endTime}` : booking.appointmentTime;
+            const timeRange = booking.endTime ? `${formatTime(booking.appointmentTime)} - ${formatTime(booking.endTime)}` : formatTime(booking.appointmentTime);
             const duration = booking.therapyDuration ? `${booking.therapyDuration} mins` : 'N/A';
             return `
             <tr>
@@ -362,8 +412,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${booking.insuranceClaim.toFixed(2)}</td>
                 <td>${booking.gapPayment.toFixed(2)}</td>
                 <td><span class="pay-method ${booking.paymentMethod}">${booking.paymentMethod.charAt(0).toUpperCase() + booking.paymentMethod.slice(1)}</span></td>
+                <td>
+                    <a href="customer-detail.html?name=${encodeURIComponent(booking.customerName)}" class="action-btn edit-btn" style="color: #5D4037; text-decoration: none; cursor: pointer; font-weight: bold; margin-right: 8px;">Edit</a>
+                    <button class="action-btn delete-btn" data-booking-id="${booking.id}" style="background: none; border: none; color: #D32F2F; cursor: pointer; font-weight: bold; padding: 0;">Delete</button>
+                </td>
             </tr>
         `}).join('');
+
+        // Add event listeners for delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const bookingId = btn.dataset.bookingId;
+                if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                    try {
+                        const response = await fetch(`http://localhost:3000/api/bookings/${bookingId}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        
+                        if (!response.ok) throw new Error('Failed to delete booking');
+                        
+                        alert('Record deleted successfully!');
+                        loadCustomerRecords(); // Reload the data
+                    } catch (error) {
+                        console.error('Error deleting record:', error);
+                        alert(`Error: ${error.message}`);
+                    }
+                }
+            });
+        });
     }
 
     // Function to filter customer records
@@ -560,8 +638,8 @@ document.addEventListener('DOMContentLoaded', () => {
             detailInsurance.addEventListener('input', calculateGapDetail);
         }
 
-        // Function to populate therapist dropdown based on selected therapists
-        function populateTherapistDropdownDetail() {
+        // Populate therapist dropdown and set current value
+        function populateTherapistDropdownDetail(currentTherapist) {
             const therapistSelect = document.getElementById('therapist');
             if (!therapistSelect) return;
             
@@ -572,22 +650,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 therapistSelect.remove(1);
             }
             
-            if (selectedTherapists.length === 0) {
+            // Build list of therapists to show
+            const therapistsToShow = new Set(selectedTherapists);
+            if (currentTherapist) {
+                therapistsToShow.add(currentTherapist);
+            }
+            
+            if (therapistsToShow.size === 0) {
                 therapistSelect.disabled = true;
                 therapistSelect.options[0].text = 'No therapists selected for today';
                 return;
             }
             
             therapistSelect.disabled = false;
-            therapistSelect.options[0].text = 'Assign Therapist';
+            therapistSelect.options[0].text = 'Select Therapist';
             
-            // Add selected therapists to dropdown
-            selectedTherapists.forEach(therapist => {
+            // Add therapists to dropdown
+            Array.from(therapistsToShow).sort().forEach(therapist => {
                 const option = document.createElement('option');
                 option.value = therapist;
                 option.textContent = therapist;
                 therapistSelect.appendChild(option);
             });
+            
+            // Set the current therapist as selected
+            if (currentTherapist) {
+                therapistSelect.value = currentTherapist;
+            }
         }
 
         // Load customer bookings
@@ -603,8 +692,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Populate form with first booking's info
+                // Get first booking data
                 const firstBooking = bookings[0];
+
+                // Populate therapist dropdown FIRST and ensure current therapist is selected
+                populateTherapistDropdownDetail(firstBooking.therapist);
+
+                // Now populate all form fields with first booking's info
                 document.getElementById('customerName').value = firstBooking.customerName || '';
                 document.getElementById('phone').value = firstBooking.phone || '';
                 document.getElementById('insurance').value = firstBooking.insurance || '';
@@ -612,17 +706,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('appointmentTime').value = firstBooking.appointmentTime || '';
                 document.getElementById('therapyDuration').value = firstBooking.therapyDuration || '';
                 document.getElementById('endTime').value = firstBooking.endTime || '';
-                document.getElementById('therapist').value = firstBooking.therapist || '';
                 document.getElementById('treatment').value = firstBooking.treatment || '';
-                document.getElementById('totalPrice').value = firstBooking.totalPrice || '';
-                document.getElementById('insuranceClaim').value = firstBooking.insuranceClaim || '';
-                document.getElementById('gapPayment').value = firstBooking.gapPayment || '';
-                document.getElementById('paymentMethod').value = firstBooking.paymentMethod || '';
+                document.getElementById('totalPrice').value = (firstBooking.totalPrice || '').toString();
+                document.getElementById('insuranceClaim').value = (firstBooking.insuranceClaim || '').toString();
+                document.getElementById('gapPayment').value = (firstBooking.gapPayment || '').toString();
+                document.getElementById('paymentMethod').value = firstBooking.paymentMethod || 'cash';
 
-                // Populate therapist dropdown
-                populateTherapistDropdownDetail();
-
-                // Calculate gap payment
+                // Calculate gap payment only (don't recalculate end time to preserve original value)
                 calculateGapDetail();
 
                 // Display booking history
