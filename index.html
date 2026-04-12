@@ -20,8 +20,47 @@
 
         <header class="dashboard-header">
             <h2 id="live-date">Loading date...</h2>
-            <p>Welcome back, Receptionist</p>
         </header>
+
+        <section class="selection-area">
+            <h3>Assign Therapist for Today</h3>
+    
+                <div class="controls">
+                <select id="therapist-select">
+                    <option value="" disabled selected>Select a therapist...</option>
+                    <option value="Alice">Alice</option>
+                    <option value="Sunny">Sunny</option>
+                    <option value="Helen">Helen</option>
+                    <option value="Melody">Melody</option>
+                    <option value="Jacky">Jacky</option>
+                    <option value="Kelly">Kelly</option>
+                    <option value="Olie">Olie</option>
+                    <option value="Joanna">Joanna</option>
+                    <option value="Coco">Coco</option>
+                    <option value="Tina">Tina</option>
+                </select>
+                <button id="add-btn">Add to Shift</button>
+                </div>
+
+                <div id="selected-list" class="status-grid">
+            </div>
+        </section>
+
+        <section class="upcoming-appointments">
+            <h3>Today's Appointments</h3>
+            <ul class="appointment-list">
+                <li>
+                    <span class="time">17:00</span>
+                    <span class="name">John Smith</span>
+                    <span class="therapist-tag">Therapist B</span>
+                </li>
+                <li>
+                    <span class="time">18:30</span>
+                    <span class="name">Emma Watson</span>
+                    <span class="therapist-tag">Therapist A</span>
+                </li>
+            </ul>
+        </section>
 
         <section class="status-grid">
             <div class="status-card">
@@ -41,22 +80,6 @@
                 <h3>Therapist D</h3>
                 <span class="badge break">On Break</span>
             </div>
-        </section>
-
-        <section class="upcoming-appointments">
-            <h3>Today's Schedule</h3>
-            <ul class="appointment-list">
-                <li>
-                    <span class="time">17:00</span>
-                    <span class="name">John Smith</span>
-                    <span class="therapist-tag">Therapist B</span>
-                </li>
-                <li>
-                    <span class="time">18:30</span>
-                    <span class="name">Emma Watson</span>
-                    <span class="therapist-tag">Therapist A</span>
-                </li>
-            </ul>
         </section>
     </div>
     <script src="script.js"></script>

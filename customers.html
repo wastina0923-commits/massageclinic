@@ -24,8 +24,8 @@
         </header>
 
         <section class="search-box">
-            <input type="text" id="customerSearch" placeholder="Search by name or phone number...">
-            <button class="filter-btn">Search</button>
+            <input type="text" id="customerSearch" placeholder="Search by keywords...">
+            <button class="filter-btn" id="searchBtn">Search</button>
         </section>
 
         <section class="table-container">
@@ -33,6 +33,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Customer</th>
                         <th>Therapist</th>
                         <th>Treatment</th>
@@ -43,27 +44,8 @@
                     </tr>
                 </thead>
                 <tbody id="customerTableBody">
-                    <tr>
-                        <td>24/03/2026</td>
-                        <td><strong>John Smith</strong><br><small>0412 345 678</small></td>
-                        <td>Therapist A</td>
-                        <td>Whole Body</td>
-                        <td>110.00</td>
-                        <td>70.00</td>
-                        <td>40.00</td>
-                        <td><span class="pay-method card">Card</span></td>
-                    </tr>
-                    <tr>
-                        <td>23/03/2026</td>
-                        <td><strong>Emma Watson</strong><br><small>0422 987 654</small></td>
-                        <td>Therapist C</td>
-                        <td>Neck & Shoulder</td>
-                        <td>85.00</td>
-                        <td>0.00</td>
-                        <td>85.00</td>
-                        <td><span class="pay-method cash">Cash</span></td>
-                    </tr>
-                    </tbody>
+                    <!-- Data will be loaded from database -->
+                </tbody>
             </table>
         </section>
     </div>

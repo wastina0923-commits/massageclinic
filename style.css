@@ -113,6 +113,16 @@ header h1 {
     gap: 20px;
 }
 
+/* Adjust for 4 columns in date/time section */
+.date-time-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.date-time-grid .input-group:nth-child(3),
+.date-time-grid .input-group:nth-child(4) {
+    grid-column: auto;
+}
+
 /* Adjust for 3 columns in payment section */
 section:last-of-type .grid-inputs {
     grid-template-columns: 1fr 1fr 1fr;
@@ -146,6 +156,96 @@ input:focus, select:focus {
     color: var(--highlight);
     font-weight: bold;
     border: 1px dashed var(--accent-color);
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#therapist-select {
+    flex: 1; /* 讓選單佔滿剩餘空間 */
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-color);
+}
+
+#add-btn {
+    padding: 10px 20px;
+    background-color: var(--nav-bg);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+    margin-top: 20px;
+}
+
+#selected-list {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.assigned-therapist-card {
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid #E0E0E0;
+    background-color: #FFFFFF;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.therapist-bookings {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #F3E5F5;
+    font-size: 0.8rem;
+    flex-grow: 1;
+}
+
+.booking-item {
+    padding: 6px 0;
+    color: var(--secondary-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.assigned-therapist-card h4 {
+    margin: 0 0 10px;
+    font-size: 1rem;
+}
+
+.assigned-therapist-card .remove-btn {
+    width: 100%;
+}
+
+/* 刪除按鈕樣式 */
+.remove-btn {
+    margin-top: 10px;
+    background: none;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.remove-btn:hover {
+    background-color: #ff4444;
+    color: white;
+}
+
+/* 新增卡片的淡入動畫 */
+.animated-fadeIn {
+    animation: fadeIn 0.4s ease;
 }
 
 /* --- Button --- */

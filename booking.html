@@ -12,28 +12,47 @@
             <img src="logo.png" alt="Clinic Logo" class="logo">
             <div class="nav-links">
                 <a href="index.html">Home</a>
-                <a href="booking.html" class="active">New Booking</a>
+                <a href="booking.html" class="active">Register Client</a>
                 <a href="customers.html">Customers</a>
                 <a href="dashboard.html">Earnings</a>
             </div>
         </nav>
 
         <header>
-            <h1>New Appointment</h1>
+            <h1><b>Register Client</b></h1>
+            <h2 id="live-date">Loading date...</h2>
             <p class="subtitle">Please fill in the client and service details below.</p>
         </header>
 
         <form id="bookingForm">
             <section class="form-section"> 
                 <h3>1. Date & Time</h3> 
-                <div class="grid-inputs"> 
+                <div class="grid-inputs date-time-grid"> 
                     <div class="input-group">  
                         <label for="appointmentDate">Appointment Date</label> 
                         <input type="date" id="appointmentDate" required> 
                     </div> 
                     <div class="input-group">
-                        <label for="appointmentTime">Time</label> 
+                        <label for="appointmentTime">Start Time</label> 
                         <input type="time" id="appointmentTime" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="therapyDuration">Therapy Time (mins)</label> 
+                        <select id="therapyDuration" required>
+                            <option value="" disabled selected>Select duration...</option>
+                            <option value="10">10 mins</option>
+                            <option value="20">20 mins</option>
+                            <option value="30">30 mins</option>
+                            <option value="40">40 mins</option>
+                            <option value="45">45 mins</option>
+                            <option value="60">60 mins</option>
+                            <option value="90">90 mins</option>
+                            <option value="120">120 mins</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="endTime">End Time</label> 
+                        <input type="time" id="endTime" readonly class="readonly-input">
                     </div>
                 </div>
             </section>
@@ -63,10 +82,16 @@
                         <label for="therapist">Therapist</label>
                         <select id="therapist" required>
                             <option value="">Assign Therapist</option>
-                            <option value="A">Therapist A (45%)</option>
-                            <option value="B">Therapist B (45%)</option>
-                            <option value="C">Therapist C (50%)</option>
-                            <option value="D">Therapist D (50%)</option>
+                            <option value="Alice">Alice</option>
+                            <option value="Sunny">Sunny</option>
+                            <option value="Helen">Helen</option>
+                            <option value="Melody">Melody</option>
+                            <option value="Jacky">Jacky</option>
+                            <option value="Kelly">Kelly</option>
+                            <option value="Olie">Olie</option>
+                            <option value="Joanna">Joanna</option>
+                            <option value="Coco">Coco</option>
+                            <option value="Tina">Tina</option>
                         </select>
                     </div>
                     <div class="input-group">
@@ -106,4 +131,9 @@
                 </div>
             </section>
 
-            <button type="submit" class="submit-
+            <button type="submit" class="submit-btn">Register Client & Book Appointment</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
