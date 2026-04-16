@@ -2,6 +2,8 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const path = require('path');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +12,14 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+
+// Session configuration
+app.use(session({
+    secret: 'your-secret-key-change-this-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true in production with HTTPS
+}));
 
 // Initialize SQLite Database
 const db = new sqlite3.Database('./clinic.db', (err) => {
@@ -35,6 +45,12 @@ function initializeDatabase() {
             insurance TEXT,
             therapist TEXT NOT NULL,
             treatment TEXT NOT NULL,
+            hotStone INTEGER DEFAULT 0,
+            aroma INTEGER DEFAULT 0,
+            cupping INTEGER DEFAULT 0,
+            tigerBalm INTEGER DEFAULT 0,
+            deepTissue INTEGER DEFAULT 0,
+            guaSha INTEGER DEFAULT 0,
             totalPrice REAL NOT NULL,
             insuranceClaim REAL NOT NULL,
             gapPayment REAL NOT NULL,
@@ -62,6 +78,49 @@ function initializeDatabase() {
                     console.log('Added endTime column to existing table');
                 }
             });
+            // Add addon columns if they don't exist
+            db.run(`ALTER TABLE bookings ADD COLUMN hotStone INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding hotStone column:', err);
+                } else if (!err) {
+                    console.log('Added hotStone column to existing table');
+                }
+            });
+            db.run(`ALTER TABLE bookings ADD COLUMN aroma INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding aroma column:', err);
+                } else if (!err) {
+                    console.log('Added aroma column to existing table');
+                }
+            });
+            db.run(`ALTER TABLE bookings ADD COLUMN cupping INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding cupping column:', err);
+                } else if (!err) {
+                    console.log('Added cupping column to existing table');
+                }
+            });
+            db.run(`ALTER TABLE bookings ADD COLUMN tigerBalm INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding tigerBalm column:', err);
+                } else if (!err) {
+                    console.log('Added tigerBalm column to existing table');
+                }
+            });
+            db.run(`ALTER TABLE bookings ADD COLUMN deepTissue INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding deepTissue column:', err);
+                } else if (!err) {
+                    console.log('Added deepTissue column to existing table');
+                }
+            });
+            db.run(`ALTER TABLE bookings ADD COLUMN guaSha INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding guaSha column:', err);
+                } else if (!err) {
+                    console.log('Added guaSha column to existing table');
+                }
+            });
         }
     });
 
@@ -80,13 +139,92 @@ function initializeDatabase() {
             console.log('Customers table ready');
         }
     });
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            role TEXT DEFAULT 'user',
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating users table:', err);
+        } else {
+            console.log('Users table ready');
+            // Create default admin user if no users exist
+            db.get('SELECT COUNT(*) as count FROM users', (err, row) => {
+                if (!err && row.count === 0) {
+                    const hashedPassword = bcrypt.hashSync('admin123', 10);
+                    db.run('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
+                        ['admin', hashedPassword, 'admin'], (err) => {
+                        if (!err) {
+                            console.log('Default admin user created: username=admin, password=admin123');
+                        }
+                    });
+                }
+            });
+        }
+    });
 }
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+    if (req.session.userId) {
+        return next();
+    } else {
+        return res.status(401).json({ error: 'Authentication required' });
+    }
+}
+
+// Authentication routes
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password required' });
+    }
+
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        if (!user || !bcrypt.compareSync(password, user.password)) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        req.session.role = user.role;
+
+        res.json({ success: true, message: 'Login successful', user: { username: user.username, role: user.role } });
+    });
+});
+
+app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Logout failed' });
+        }
+        res.json({ success: true, message: 'Logout successful' });
+    });
+});
+
+app.get('/api/check-auth', (req, res) => {
+    if (req.session.userId) {
+        res.json({ authenticated: true, user: { username: req.session.username, role: req.session.role } });
+    } else {
+        res.json({ authenticated: false });
+    }
+});
 
 // API Routes
 
 // Save a new booking
-app.post('/api/bookings', (req, res) => {
-    const { appointmentDate, appointmentTime, therapyDuration, endTime, customerName, phone, insurance, therapist, treatment, totalPrice, insuranceClaim, gapPayment, paymentMethod } = req.body;
+app.post('/api/bookings', requireAuth, (req, res) => {
+    const { appointmentDate, appointmentTime, therapyDuration, endTime, customerName, phone, insurance, therapist, treatment, totalPrice, insuranceClaim, gapPayment, paymentMethod, hotStone, aroma, cupping, tigerBalm, deepTissue, guaSha } = req.body;
 
     // Validate required fields
     if (!appointmentDate || !appointmentTime || !customerName || !phone || !therapist || !treatment) {
@@ -94,11 +232,31 @@ app.post('/api/bookings', (req, res) => {
     }
 
     const stmt = db.prepare(`
-        INSERT INTO bookings (appointmentDate, appointmentTime, therapyDuration, endTime, customerName, phone, insurance, therapist, treatment, totalPrice, insuranceClaim, gapPayment, paymentMethod)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO bookings (appointmentDate, appointmentTime, therapyDuration, endTime, customerName, phone, insurance, therapist, treatment, hotStone, aroma, cupping, tigerBalm, deepTissue, guaSha, totalPrice, insuranceClaim, gapPayment, paymentMethod)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    stmt.run([appointmentDate, appointmentTime, therapyDuration || null, endTime || null, customerName, phone, insurance || null, therapist, treatment, totalPrice || 0, insuranceClaim || 0, gapPayment || 0, paymentMethod || 'cash'], function(err) {
+    stmt.run([
+        appointmentDate,
+        appointmentTime,
+        therapyDuration || null,
+        endTime || null,
+        customerName,
+        phone,
+        insurance || null,
+        therapist,
+        treatment,
+        hotStone ? 1 : 0,
+        aroma ? 1 : 0,
+        cupping ? 1 : 0,
+        tigerBalm ? 1 : 0,
+        deepTissue ? 1 : 0,
+        guaSha ? 1 : 0,
+        totalPrice || 0,
+        insuranceClaim || 0,
+        gapPayment || 0,
+        paymentMethod || 'cash'
+    ], function(err) {
         if (err) {
             console.error('Error inserting booking:', err);
             return res.status(500).json({ error: 'Failed to save booking' });
@@ -108,7 +266,7 @@ app.post('/api/bookings', (req, res) => {
 });
 
 // Get all bookings
-app.get('/api/bookings', (req, res) => {
+app.get('/api/bookings', requireAuth, (req, res) => {
     db.all('SELECT * FROM bookings ORDER BY appointmentDate DESC, appointmentTime DESC', (err, rows) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to fetch bookings' });
@@ -117,8 +275,22 @@ app.get('/api/bookings', (req, res) => {
     });
 });
 
+// Get booking by id
+app.get('/api/bookings/id/:id', requireAuth, (req, res) => {
+    const id = req.params.id;
+    db.get('SELECT * FROM bookings WHERE id = ?', [id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to fetch booking' });
+        }
+        if (!row) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        res.json(row);
+    });
+});
+
 // Get bookings for a specific date
-app.get('/api/bookings/:date', (req, res) => {
+app.get('/api/bookings/:date', requireAuth, (req, res) => {
     const date = req.params.date;
     db.all('SELECT * FROM bookings WHERE appointmentDate = ? ORDER BY appointmentTime', [date], (err, rows) => {
         if (err) {
@@ -129,7 +301,7 @@ app.get('/api/bookings/:date', (req, res) => {
 });
 
 // Get all customers
-app.get('/api/customers', (req, res) => {
+app.get('/api/customers', requireAuth, (req, res) => {
     db.all('SELECT * FROM customers ORDER BY name', (err, rows) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to fetch customers' });
@@ -139,7 +311,7 @@ app.get('/api/customers', (req, res) => {
 });
 
 // Get customer bookings by name
-app.get('/api/customer/:name', (req, res) => {
+app.get('/api/customer/:name', requireAuth, (req, res) => {
     const name = req.params.name;
     db.all('SELECT * FROM bookings WHERE customerName = ? ORDER BY appointmentDate DESC', [name], (err, rows) => {
         if (err) {
@@ -150,7 +322,7 @@ app.get('/api/customer/:name', (req, res) => {
 });
 
 // Update a booking
-app.put('/api/bookings/:id', (req, res) => {
+app.put('/api/bookings/:id', requireAuth, (req, res) => {
     const id = req.params.id;
     const {
         appointmentDate,
@@ -162,6 +334,12 @@ app.put('/api/bookings/:id', (req, res) => {
         insurance,
         therapist,
         treatment,
+        hotStone,
+        aroma,
+        cupping,
+        tigerBalm,
+        deepTissue,
+        guaSha,
         totalPrice,
         insuranceClaim,
         gapPayment,
@@ -183,6 +361,12 @@ app.put('/api/bookings/:id', (req, res) => {
             insurance = ?,
             therapist = ?,
             treatment = ?,
+            hotStone = ?,
+            aroma = ?,
+            cupping = ?,
+            tigerBalm = ?,
+            deepTissue = ?,
+            guaSha = ?,
             totalPrice = ?,
             insuranceClaim = ?,
             gapPayment = ?,
@@ -198,6 +382,12 @@ app.put('/api/bookings/:id', (req, res) => {
             insurance || null,
             therapist,
             treatment,
+            hotStone ? 1 : 0,
+            aroma ? 1 : 0,
+            cupping ? 1 : 0,
+            tigerBalm ? 1 : 0,
+            deepTissue ? 1 : 0,
+            guaSha ? 1 : 0,
             totalPrice || 0,
             insuranceClaim || 0,
             gapPayment || 0,
@@ -214,7 +404,7 @@ app.put('/api/bookings/:id', (req, res) => {
 });
 
 // Delete a booking
-app.delete('/api/bookings/:id', (req, res) => {
+app.delete('/api/bookings/:id', requireAuth, (req, res) => {
     const id = req.params.id;
     db.run('DELETE FROM bookings WHERE id = ?', [id], function(err) {
         if (err) {

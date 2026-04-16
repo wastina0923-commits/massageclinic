@@ -15,6 +15,7 @@
                 <a href="booking.html">Register Client</a>
                 <a href="customers.html">Customers</a>
                 <a href="dashboard.html">Earnings</a>
+                <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
         </nav>
 
@@ -98,6 +99,30 @@
                 </section>
 
                 <section class="form-section">
+                    <h3>Additional Therapies</h3>
+                    <div class="checkbox-group">
+                        <label for="hot-stone" class="checkbox-label">
+                            <input type="checkbox" id="hot-stone" value="hot-stone"> +$5 Hot Stone Therapy
+                        </label>
+                        <label for="aroma" class="checkbox-label">
+                            <input type="checkbox" id="aroma" value="aroma"> +$5 Aroma Therapy
+                        </label>
+                        <label for="cupping" class="checkbox-label">
+                            <input type="checkbox" id="cupping" value="cupping"> +$10 Cupping Therapy
+                        </label>
+                        <label for="tiger-balm" class="checkbox-label">
+                            <input type="checkbox" id="tiger-balm" value="tiger-balm"> +$5 Tiger Balm
+                        </label>
+                        <label for="deep-tissue" class="checkbox-label">
+                            <input type="checkbox" id="deep-tissue" value="deep-tissue"> +$5 Deep Tissue
+                        </label>
+                        <label for="gua-sha" class="checkbox-label">
+                            <input type="checkbox" id="gua-sha" value="gua-sha"> +$10 Gua Sha
+                        </label>
+                    </div>
+                </section>
+
+                <section class="form-section">
                     <h3>Payment Information</h3>
                     <div class="grid-inputs">
                         <div class="input-group">
@@ -140,6 +165,27 @@
         </section>
     </div>
 
+    <script>
+        // Check authentication on page load
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/check-auth');
+                const data = await response.json();
+
+                if (!data.authenticated) {
+                    // Redirect to login if not authenticated
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                // Redirect to login on error
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Check auth when page loads
+        checkAuth();
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

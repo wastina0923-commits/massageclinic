@@ -92,6 +92,96 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // --- 1.6. Automatic Total Price Calculation Based on Therapy Duration and Add-ons ---
+    const priceMapping = {
+        10: 20,
+        20: 40,
+        30: 50,
+        40: 65,
+        45: 70,
+        60: 90,
+        90: 130,
+        120: 170
+    };
+
+    const addOnCheckboxes = [
+        'hot-stone', 'aroma', 'cupping', 'tiger-balm', 'deep-tissue', 'gua-sha'
+    ];
+
+    const addonPrices = {
+        'hot-stone': 5,
+        'aroma': 5,
+        'cupping': 10,
+        'tiger-balm': 5,
+        'deep-tissue': 5,
+        'gua-sha': 10
+    };
+
+    const addOnMapping = {
+        'hot-stone': 'hotStone',
+        'aroma': 'aroma',
+        'cupping': 'cupping',
+        'tiger-balm': 'tigerBalm',
+        'deep-tissue': 'deepTissue',
+        'gua-sha': 'guaSha'
+    };
+
+    function getSelectedAddOns() {
+        const addOnData = {};
+        addOnCheckboxes.forEach(id => {
+            const checkbox = document.getElementById(id);
+            const key = addOnMapping[id];
+            if (key) {
+                addOnData[key] = checkbox && checkbox.checked ? 1 : 0;
+            }
+        });
+        return addOnData;
+    }
+
+    function setAddOnStates(booking) {
+        addOnCheckboxes.forEach(id => {
+            const checkbox = document.getElementById(id);
+            const key = addOnMapping[id];
+            if (checkbox && key && booking.hasOwnProperty(key)) {
+                checkbox.checked = !!booking[key];
+            }
+        });
+    }
+
+    function calculateTotalPrice() {
+        if (!therapyDurationInput || !totalInput) return;
+
+        const duration = parseInt(therapyDurationInput.value);
+        let total = 0;
+
+        if (duration && priceMapping[duration]) {
+            total = priceMapping[duration];
+        }
+
+        // Add add-on prices
+        addOnCheckboxes.forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox && checkbox.checked) {
+                total += addonPrices[checkbox.value] || 0;
+            }
+        });
+
+        totalInput.value = total > 0 ? total : '';
+    }
+
+    if (therapyDurationInput) {
+        therapyDurationInput.addEventListener('change', calculateTotalPrice);
+    }
+
+    // Add event listeners for add-on checkboxes
+    addOnCheckboxes.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.addEventListener('change', calculateTotalPrice);
+        }
+    });
+
+
     // --- 2. Automatic Gap Payment Calculation Logic ---
     const totalInput = document.getElementById('totalPrice');
     const insuranceInput = document.getElementById('insuranceClaim');
@@ -125,7 +215,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- 3. Customer Records Search Functionality ---
+    // --- 3. Auto-fill Customer Details on Name Input ---
+    const customerNameInput = document.getElementById('customerName');
+    const phoneInput = document.getElementById('phone');
+    const insuranceInputBooking = document.getElementById('insurance');
+
+    if (customerNameInput && phoneInput && insuranceInputBooking) {
+        customerNameInput.addEventListener('blur', async () => {
+            const name = customerNameInput.value.trim();
+            if (!name) return;
+
+            try {
+                const response = await fetch('/api/bookings');
+                const bookings = await response.json();
+
+                // Create a map of customer names to their latest details
+                const customerMap = {};
+                bookings.forEach(booking => {
+                    const lowerName = booking.customerName.toLowerCase();
+                    customerMap[lowerName] = {
+                        phone: booking.phone,
+                        insurance: booking.insurance
+                    };
+                });
+
+                const customer = customerMap[name.toLowerCase()];
+                if (customer) {
+                    phoneInput.value = customer.phone || '';
+                    insuranceInputBooking.value = customer.insurance || '';
+                }
+            } catch (error) {
+                console.error('Error fetching customer details:', error);
+            }
+        });
+    }
+
+
+    // --- 4. Customer Records Search Functionality ---
     const searchInput = document.getElementById('customerSearch');
     const tableBody = document.getElementById('customerTableBody');
 
@@ -405,15 +531,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${formatDate(booking.appointmentDate)}</td>
                 <td>${timeRange}</td>
                 <td>${duration}</td>
-                <td><a href="customer-detail.html?name=${encodeURIComponent(booking.customerName)}" style="color: #5D4037; text-decoration: none; cursor: pointer;"><strong>${booking.customerName}</strong></a><br><small>${booking.phone}</small></td>
+                <td><a href="customer-detail.html?id=${booking.id}" style="color: #5D4037; text-decoration: none; cursor: pointer;"><strong>${booking.customerName}</strong></a><br><small>${booking.phone}</small></td>
                 <td>${booking.therapist}</td>
                 <td>${formatTreatment(booking.treatment)}</td>
-                <td>${booking.totalPrice.toFixed(2)}</td>
-                <td>${booking.insuranceClaim.toFixed(2)}</td>
-                <td>${booking.gapPayment.toFixed(2)}</td>
+                <td>$${booking.totalPrice.toFixed(2)}</td>
+                <td>$${booking.insuranceClaim.toFixed(2)}</td>
+                <td>$${booking.gapPayment.toFixed(2)}</td>
                 <td><span class="pay-method ${booking.paymentMethod}">${booking.paymentMethod.charAt(0).toUpperCase() + booking.paymentMethod.slice(1)}</span></td>
                 <td>
-                    <a href="customer-detail.html?name=${encodeURIComponent(booking.customerName)}" class="action-btn edit-btn" style="color: #5D4037; text-decoration: none; cursor: pointer; font-weight: bold; margin-right: 8px;">Edit</a>
+                    <a href="customer-detail.html?id=${booking.id}" class="action-btn edit-btn" style="color: #5D4037; text-decoration: none; cursor: pointer; font-weight: bold; margin-right: 8px;">Edit</a>
                     <button class="action-btn delete-btn" data-booking-id="${booking.id}" style="background: none; border: none; color: #D32F2F; cursor: pointer; font-weight: bold; padding: 0;">Delete</button>
                 </td>
             </tr>
@@ -529,7 +655,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 totalPrice: parseFloat(document.getElementById('totalPrice')?.value) || 0,
                 insuranceClaim: parseFloat(document.getElementById('insuranceClaim')?.value) || 0,
                 gapPayment: parseFloat(document.getElementById('gapPayment')?.value) || 0,
-                paymentMethod: document.getElementById('paymentMethod')?.value || 'cash'
+                paymentMethod: document.getElementById('paymentMethod')?.value || 'cash',
+                ...getSelectedAddOns()
             };
 
             console.log("Data to be sent to server:", formData);
@@ -573,12 +700,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = document.getElementById('loadingMessage');
 
     if (customerDetailForm) {
-        // Get customer name from URL parameter
+        // Get booking id or customer name from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const customerName = urlParams.get('name');
+        let bookingId = urlParams.get('id');
+        const customerNameParam = urlParams.get('name');
+        let currentBookingId = bookingId;
 
-        if (!customerName) {
-            loadingMessage.textContent = 'Customer name not found. Please return to customers page.';
+        if (!bookingId && !customerNameParam) {
+            loadingMessage.textContent = 'Booking ID or customer name not found. Please return to customers page.';
             return;
         }
 
@@ -682,57 +811,82 @@ document.addEventListener('DOMContentLoaded', () => {
         // Load customer bookings
         async function loadCustomerDetails() {
             try {
-                const response = await fetch(`http://localhost:3000/api/customer/${encodeURIComponent(customerName)}`);
-                if (!response.ok) throw new Error('Failed to load customer details');
-                
-                const bookings = await response.json();
-                
-                if (bookings.length === 0) {
-                    loadingMessage.textContent = 'No bookings found for this customer.';
+                let booking;
+                if (currentBookingId) {
+                    const response = await fetch(`/api/bookings/id/${currentBookingId}`);
+                    if (!response.ok) {
+                        const message = `Failed to load booking details (${response.status})`;
+                        throw new Error(message);
+                    }
+                    booking = await response.json();
+                } else {
+                    const response = await fetch(`/api/customer/${encodeURIComponent(customerNameParam)}`);
+                    if (!response.ok) {
+                        const message = `Failed to load customer bookings (${response.status})`;
+                        throw new Error(message);
+                    }
+                    const bookings = await response.json();
+                    if (!bookings || bookings.length === 0) {
+                        loadingMessage.textContent = 'No bookings found for this customer.';
+                        return;
+                    }
+                    booking = bookings[0];
+                    currentBookingId = booking.id;
+                }
+
+                if (!booking) {
+                    loadingMessage.textContent = 'Booking not found.';
                     return;
                 }
 
-                // Get first booking data
-                const firstBooking = bookings[0];
-
                 // Populate therapist dropdown FIRST and ensure current therapist is selected
-                populateTherapistDropdownDetail(firstBooking.therapist);
+                populateTherapistDropdownDetail(booking.therapist);
 
-                // Now populate all form fields with first booking's info
-                document.getElementById('customerName').value = firstBooking.customerName || '';
-                document.getElementById('phone').value = firstBooking.phone || '';
-                document.getElementById('insurance').value = firstBooking.insurance || '';
-                document.getElementById('appointmentDate').value = firstBooking.appointmentDate || '';
-                document.getElementById('appointmentTime').value = firstBooking.appointmentTime || '';
-                document.getElementById('therapyDuration').value = firstBooking.therapyDuration || '';
-                document.getElementById('endTime').value = firstBooking.endTime || '';
-                document.getElementById('treatment').value = firstBooking.treatment || '';
-                document.getElementById('totalPrice').value = (firstBooking.totalPrice || '').toString();
-                document.getElementById('insuranceClaim').value = (firstBooking.insuranceClaim || '').toString();
-                document.getElementById('gapPayment').value = (firstBooking.gapPayment || '').toString();
-                document.getElementById('paymentMethod').value = firstBooking.paymentMethod || 'cash';
+                // Populate form with booking data
+                document.getElementById('customerName').value = booking.customerName || '';
+                document.getElementById('phone').value = booking.phone || '';
+                document.getElementById('insurance').value = booking.insurance || '';
+                document.getElementById('appointmentDate').value = booking.appointmentDate || '';
+                document.getElementById('appointmentTime').value = booking.appointmentTime || '';
+                document.getElementById('therapyDuration').value = booking.therapyDuration || '';
+                document.getElementById('endTime').value = booking.endTime || '';
+                document.getElementById('treatment').value = booking.treatment || '';
+                document.getElementById('totalPrice').value = (booking.totalPrice || '').toString();
+                document.getElementById('insuranceClaim').value = (booking.insuranceClaim || '').toString();
+                document.getElementById('gapPayment').value = (booking.gapPayment || '').toString();
+                document.getElementById('paymentMethod').value = booking.paymentMethod || 'cash';
 
-                // Calculate gap payment only (don't recalculate end time to preserve original value)
+                setAddOnStates(booking);
+                calculateTotalPrice();
                 calculateGapDetail();
+
+                // Load booking history for the same customer (excluding current booking)
+                const historyResponse = await fetch(`/api/customer/${encodeURIComponent(booking.customerName)}`);
+                const allBookings = await historyResponse.json();
+                const historyBookings = allBookings.filter(b => b.id != currentBookingId);
 
                 // Display booking history
                 const bookingHistoryDiv = document.getElementById('bookingHistory');
-                bookingHistoryDiv.innerHTML = bookings.map(b => {
-                    const date = formatDate(b.appointmentDate);
-                    const timeRange = b.endTime ? `${b.appointmentTime} - ${b.endTime}` : b.appointmentTime;
-                    return `
-                        <div style="padding: 12px; border-bottom: 1px solid #F3E5F5; margin-bottom: 10px;">
-                            <small><strong>${date} | ${timeRange}</strong></small><br>
-                            <small style="color: #8D6E63;">
-                                ${formatTreatment(b.treatment)} with ${b.therapist}
-                                <br>
-                                Total: $${b.totalPrice.toFixed(2)} | 
-                                Insurance: $${b.insuranceClaim.toFixed(2)} | 
-                                Gap: $${b.gapPayment.toFixed(2)}
-                            </small>
-                        </div>
-                    `;
-                }).join('');
+                if (historyBookings.length > 0) {
+                    bookingHistoryDiv.innerHTML = historyBookings.map(b => {
+                        const date = formatDate(b.appointmentDate);
+                        const timeRange = b.endTime ? `${b.appointmentTime} - ${b.endTime}` : b.appointmentTime;
+                        return `
+                            <div style="padding: 12px; border-bottom: 1px solid #F3E5F5; margin-bottom: 10px;">
+                                <small><strong>${date} | ${timeRange}</strong></small><br>
+                                <small style="color: #8D6E63;">
+                                    ${formatTreatment(b.treatment)} with ${b.therapist}
+                                    <br>
+                                    Total: $${b.totalPrice.toFixed(2)} | 
+                                    Insurance: $${b.insuranceClaim.toFixed(2)} | 
+                                    Gap: $${b.gapPayment.toFixed(2)}
+                                </small>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    bookingHistoryDiv.innerHTML = '<p style="color: #8D6E63;">No other bookings found for this customer.</p>';
+                }
 
                 // Show form
                 loadingMessage.style.display = 'none';
@@ -760,7 +914,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 totalPrice: parseFloat(document.getElementById('totalPrice').value),
                 insuranceClaim: parseFloat(document.getElementById('insuranceClaim').value),
                 gapPayment: parseFloat(document.getElementById('gapPayment').value),
-                paymentMethod: document.getElementById('paymentMethod').value
+                paymentMethod: document.getElementById('paymentMethod').value,
+                ...getSelectedAddOns()
             };
 
             if (!updatedData.customerName || !updatedData.phone || !updatedData.appointmentDate || !updatedData.appointmentTime || !updatedData.therapist || !updatedData.treatment) {
@@ -769,20 +924,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                // Get all bookings for this customer
-                const response = await fetch(`http://localhost:3000/api/customer/${encodeURIComponent(customerName)}`);
-                const bookings = await response.json();
+                const response = await fetch(`/api/bookings/${currentBookingId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
 
-                // Update all bookings for this customer
-                const updatePromises = bookings.map(booking =>
-                    fetch(`http://localhost:3000/api/bookings/${booking.id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(updatedData)
-                    })
-                );
+                if (!response.ok) {
+                    const message = await response.text();
+                    throw new Error(message || 'Failed to update booking');
+                }
 
-                await Promise.all(updatePromises);
                 alert('Customer information updated successfully!');
                 window.location.href = 'customers.html';
             } catch (error) {
@@ -793,5 +945,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Load customer details on page load
         loadCustomerDetails();
+    }
+
+    // --- 7. Dashboard Earnings Calculation ---
+    const commissionRates = {
+        'Alice': 0.45,
+        'Sunny': 0.45,
+        'Helen': 0.45,
+        'Melody': 0.45,
+        'Jacky': 0.50,
+        'Kelly': 0.50,
+        'Olie': 0.50,
+        'Joanna': 0.50,
+        'Coco': 0.50,
+        'Tina': 0.50
+    };
+
+    if (document.getElementById('totalRevenue')) {
+        // Dashboard page
+        loadDashboardData();
+    }
+
+    async function loadDashboardData() {
+        try {
+            const response = await fetch('/api/bookings');
+            const bookings = await response.json();
+
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+            const todaysBookings = bookings.filter(b => b.appointmentDate === todayStr);
+
+            let totalRevenue = 0;
+            let totalGap = 0;
+            let totalInsurance = 0;
+            const therapistStats = {};
+
+            todaysBookings.forEach(b => {
+                totalRevenue += b.totalPrice;
+                totalGap += b.gapPayment;
+                totalInsurance += b.insuranceClaim;
+
+                if (!therapistStats[b.therapist]) {
+                    therapistStats[b.therapist] = { customers: 0, totalGenerated: 0 };
+                }
+                therapistStats[b.therapist].customers++;
+                therapistStats[b.therapist].totalGenerated += b.totalPrice;
+            });
+
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalGap').textContent = `$${totalGap.toFixed(2)}`;
+            document.getElementById('totalInsurance').textContent = `$${totalInsurance.toFixed(2)}`;
+
+            // Update date
+            document.getElementById('dashboard-date').textContent = `Financial summary for ${today.toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+            function updateStatusClass(select) {
+                const value = select.value;
+                select.className = `status-select status-${value}`;
+            }
+
+            const tbody = document.getElementById('earningsTableBody');
+            tbody.innerHTML = Object.keys(therapistStats).sort().map(therapist => {
+                const stats = therapistStats[therapist];
+                const rate = commissionRates[therapist] || 0.45;
+                const earnings = stats.totalGenerated * rate;
+                return `
+                    <tr>
+                        <td>${therapist} (${(rate * 100).toFixed(0)}%)</td>
+                        <td>${stats.customers}</td>
+                        <td>$${stats.totalGenerated.toFixed(2)}</td>
+                        <td><strong>$${earnings.toFixed(2)}</strong></td>
+                        <td><select class="status-select" data-therapist="${therapist}"><option value="pending">Pending</option><option value="paid">Paid</option></select></td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Add event listeners for status selects
+            document.querySelectorAll('.status-select').forEach(select => {
+                const therapist = select.dataset.therapist;
+                const key = `status_${todayStr}_${therapist}`;
+                const savedStatus = localStorage.getItem(key) || 'pending';
+                select.value = savedStatus;
+                updateStatusClass(select);
+
+                select.addEventListener('change', () => {
+                    localStorage.setItem(key, select.value);
+                    updateStatusClass(select);
+                });
+            });
+
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+        }
     }
 });

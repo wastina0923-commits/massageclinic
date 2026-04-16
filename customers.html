@@ -15,6 +15,7 @@
                 <a href="booking.html">Register Client</a>
                 <a href="customers.html" class="active">Customers</a>
                 <a href="dashboard.html">Earnings</a>
+                <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
         </nav>
 
@@ -38,9 +39,9 @@
                         <th>Customer</th>
                         <th>Therapist</th>
                         <th>Treatment</th>
-                        <th>Total ($)</th>
-                        <th>Insurance ($)</th>
-                        <th>Gap ($)</th>
+                        <th>Total</th>
+                        <th>Insurance</th>
+                        <th>Gap</th>
                         <th>Method</th>
                         <th>Actions</th>
                     </tr>
@@ -52,6 +53,27 @@
         </section>
     </div>
 
+    <script>
+        // Check authentication on page load
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/check-auth');
+                const data = await response.json();
+
+                if (!data.authenticated) {
+                    // Redirect to login if not authenticated
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                // Redirect to login on error
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Check auth when page loads
+        checkAuth();
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

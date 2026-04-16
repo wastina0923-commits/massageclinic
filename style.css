@@ -73,6 +73,23 @@ body {
     padding-bottom: 5px;
 }
 
+.logout-btn {
+    background: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s ease;
+    margin-left: 25px;
+}
+
+.logout-btn:hover {
+    background: #b71c1c;
+}
+
 /* --- Typography --- */
 header h1 {
     font-size: 2rem;
@@ -111,6 +128,25 @@ header h1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
 }
 
 /* Adjust for 4 columns in date/time section */
@@ -227,7 +263,7 @@ input:focus, select:focus {
     width: 100%;
 }
 
-/* 刪除按鈕樣式 */
+/* remove button */
 .remove-btn {
     margin-top: 10px;
     background: none;
@@ -289,12 +325,14 @@ input:focus, select:focus {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-size: 0.75rem;
+    white-space: nowrap;
 }
 
 .styled-table td {
     padding: 15px;
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .styled-table tr:hover {
@@ -387,6 +425,25 @@ input:focus, select:focus {
 .pay-method.cash {
     background-color: #F1F8E9;
     color: #388E3C;
+}
+
+/* --- Status Tags --- */
+.status-select {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.8rem;
+    background-color: white;
+}
+
+.status-select.status-pending {
+    background-color: #FFF3E0 !important;
+    color: #E65100 !important;
+}
+
+.status-select.status-paid {
+    background-color: #E8F5E8 !important;
+    color: #2E7D32 !important;
 }
 
 /* --- Action Buttons --- */
