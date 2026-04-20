@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dateSubtitle) {
             dateSubtitle.textContent = `Today is ${formattedDate}`;
         }
-    }
+    } 
 
     // Start the clock immediately and set it to repeat every 1000ms (1 second)
     updateClock();
@@ -426,13 +426,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Please choose a therapist before adding to the shift.');
                 return;
             }
-
+            
+            // Check if therapist is already added
             const alreadyAdded = selectedList.querySelector(`[data-therapist="${therapistName}"]`);
             if (alreadyAdded) {
                 alert(`${therapistName} is already assigned to the shift.`);
                 return;
             }
 
+            // Create a new card for the selected therapist
             const listItem = document.createElement('div');
             listItem.className = 'status-card animated-fadeIn assigned-therapist-card';
             listItem.dataset.therapist = therapistName;
@@ -492,8 +494,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatTreatment(treatment) {
         const treatmentMap = {
             'neck-shoulder': 'Neck & Shoulder',
-            'whole-body': 'Whole Body',
-            'remedial': 'Remedial Massage',
+            'head-neck-shoulder': 'Head Neck & Shoulder',
+            'upper-body': 'Upper Body',
+            'lower-body': 'Lower Body',
+            'full-body': 'Full Body',
+            'back-feet': 'Back & Feet',
             'foot': 'Foot Massage'
         };
         return treatmentMap[treatment] || treatment;
@@ -807,7 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 therapistSelect.value = currentTherapist;
             }
         }
-
+        
         // Load customer bookings
         async function loadCustomerDetails() {
             try {
@@ -999,12 +1004,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('totalInsurance').textContent = `$${totalInsurance.toFixed(2)}`;
 
             // Update date
-            document.getElementById('dashboard-date').textContent = `Financial summary for ${today.toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+            /*document.getElementById('dashboard-date').textContent = `Financial summary for ${today.toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
 
             function updateStatusClass(select) {
                 const value = select.value;
                 select.className = `status-select status-${value}`;
-            }
+            }*/
 
             const tbody = document.getElementById('earningsTableBody');
             tbody.innerHTML = Object.keys(therapistStats).sort().map(therapist => {

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Details - Massage Clinic</title>
     <link rel="stylesheet" href="style.css">
+    <script src="auth-check.js"></script>
 </head>
 <body>
     <div class="container">
@@ -60,7 +61,7 @@
                     </div>
                     <div class="grid-inputs">
                         <div class="input-group">
-                            <label for="therapyDuration">Therapy Duration (mins)</label>
+                            <label for="therapyDuration">Therapy Duration</label>
                             <select id="therapyDuration" required>
                                 <option value="">Select Duration</option>
                                 <option value="10">10 mins</option>
@@ -90,8 +91,11 @@
                             <select id="treatment" required>
                                 <option value="">Select Treatment</option>
                                 <option value="neck-shoulder">Neck & Shoulder</option>
-                                <option value="whole-body">Whole Body</option>
-                                <option value="remedial">Remedial Massage</option>
+                                <option value="head-neck-shoulder">Head Neck & Shoulder</option>
+                                <option value="upper-body">Upper Body</option>
+                                <option value="lower-body">Lower Body</option>
+                                <option value="full-body">Full Body Massage</option>
+                                <option value="back-feet">Back & Feet</option>
                                 <option value="foot">Foot Massage</option>
                             </select>
                         </div>
@@ -144,7 +148,6 @@
                             <select id="paymentMethod" required>
                                 <option value="cash">Cash</option>
                                 <option value="card">Card</option>
-                                <option value="account">Account</option>
                             </select>
                         </div>
                     </div>
@@ -165,27 +168,6 @@
         </section>
     </div>
 
-    <script>
-        // Check authentication on page load
-        async function checkAuth() {
-            try {
-                const response = await fetch('/api/check-auth');
-                const data = await response.json();
-
-                if (!data.authenticated) {
-                    // Redirect to login if not authenticated
-                    window.location.href = 'login.html';
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                // Redirect to login on error
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Check auth when page loads
-        checkAuth();
-    </script>
     <script src="script.js"></script>
 </body>
 </html>

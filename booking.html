@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Massage Clinic - New Booking</title>
     <link rel="stylesheet" href="style.css">
+    <script src="auth-check.js"></script>
 </head>
 <body>
     <div class="container">
@@ -22,7 +23,7 @@
         <header>
             <h1><b>Register Client</b></h1>
             <h2 id="live-date">Loading date...</h2>
-            <p class="subtitle">Please fill in the client and service details below.</p>
+            <!-- <p class="subtitle">Please fill in the client and service details below.</p> -->
         </header>
 
         <form id="bookingForm">
@@ -96,7 +97,7 @@
                         </select>
                     </div>
                     <div class="input-group">
-                        <label for="treatment">Body Part / Treatment</label>
+                        <label for="treatment">Treatment Type</label>
                         <select id="treatment">
                             <option value="neck-shoulder">Neck & Shoulder</option>
                             <option value="head-neck-shoulder">Head Neck & Shoulder</option>
@@ -104,7 +105,6 @@
                             <option value="lower-body">Lower Body</option>
                             <option value="Full-body">Full Body Massage</option>
                             <option value="back-feet">Back & Feet</option>
-                            <option value="remedial">Remedial Massage</option>
                             <option value="foot">Foot Massage</option>
                         </select>
                     </div>
@@ -139,24 +139,25 @@
             </section>
 
             <section class="form-section">
-                <h3>4. Payment (AUD)</h3>
+                <h3>4. Payment</h3>
                 <div class="grid-inputs">
                     <div class="input-group">
                         <label for="totalPrice">Total Amount ($)</label>
-                        <input type="number" id="totalPrice" value="0" min="0" step="0.01">
+                        <input type="number" id="totalPrice" min="0" step="0.01" required>
                     </div>
                     <div class="input-group">
                         <label for="insuranceClaim">Insurance Claim ($)</label>
-                        <input type="number" id="insuranceClaim" value="0" min="0" step="0.01">
+                        <input type="number" id="insuranceClaim" min="0" step="0.01" required>
                     </div>
                     <div class="input-group">
-                        <label for="gapPayment">Gap (Paid by Client)</label>
-                        <input type="number" id="gapPayment" value="0" readonly class="readonly-input">
+                        <label for="gapPayment">Gap ($) Paid by Client</label>
+                        <input type="number" id="gapPayment" readonly class="readonly-input">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="paymentMethod">Payment Method (for Gap)</label>
-                    <select id="paymentMethod">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" required>
+                        <option value="" disabled selected hidden>Please Select...</option>
                         <option value="cash">Cash</option>
                         <option value="card">Card</option>
                     </select>
@@ -166,27 +167,7 @@
             <button type="submit" class="submit-btn">Submit</button>
         </form>
     </div>
-    <script>
-        // Check authentication on page load
-        async function checkAuth() {
-            try {
-                const response = await fetch('/api/check-auth');
-                const data = await response.json();
-
-                if (!data.authenticated) {
-                    // Redirect to login if not authenticated
-                    window.location.href = 'login.html';
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                // Redirect to login on error
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Check auth when page loads
-        checkAuth();
-    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>

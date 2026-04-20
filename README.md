@@ -19,26 +19,12 @@ A modern booking and management system for a massage clinic with client database
 npm install
 ```
 
-This will install:
-- Express.js (backend server)
-- SQLite3 (database)
-- CORS (for frontend-backend communication)
-
 ### 2. Start the Server
 
 ```bash
 npm start
 ```
-
 The server will run on `http://localhost:3000`
-
-You should see:
-```
-Connected to SQLite database
-Bookings table ready
-Customers table ready
-Server running at http://localhost:3000
-```
 
 ### 3. Open the Application
 
@@ -46,7 +32,7 @@ Open your browser and go to `http://localhost:3000`
 
 Navigate between pages:
 - **Home** - Assign therapists to shifts for today
-- **New Booking** - Register clients and create appointments
+- **Register Clients** - Register clients in form
 - **Customers** - View all registered customers
 - **Earnings** - Track daily/weekly earnings
 

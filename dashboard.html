@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Massage Clinic - Financial Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <script src="auth-check.js"></script>
 </head>
 <body>
     <div class="container">
@@ -38,7 +39,7 @@
             <div class="summary-card highlight-card">
                 <h3>Insurance Claims</h3>
                 <p class="amount" id="totalInsurance">$0.00</p>
-                <small>HICAPS / Private Health</small>
+                <small>Medicare</small>
             </div>
         </section>
 
@@ -65,27 +66,6 @@
         </footer>
     </div>
 
-    <script>
-        // Check authentication on page load
-        async function checkAuth() {
-            try {
-                const response = await fetch('/api/check-auth');
-                const data = await response.json();
-
-                if (!data.authenticated) {
-                    // Redirect to login if not authenticated
-                    window.location.href = 'login.html';
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                // Redirect to login on error
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Check auth when page loads
-        checkAuth();
-    </script>
     <script src="script.js"></script>
 </body>
 </html>

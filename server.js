@@ -350,6 +350,9 @@ app.put('/api/bookings/:id', requireAuth, (req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Calculate gap payment server-side to ensure accuracy
+    const calculatedGapPayment = (totalPrice || 0) - (insuranceClaim || 0);
+
     db.run(
         `UPDATE bookings SET 
             appointmentDate = ?,
@@ -390,7 +393,7 @@ app.put('/api/bookings/:id', requireAuth, (req, res) => {
             guaSha ? 1 : 0,
             totalPrice || 0,
             insuranceClaim || 0,
-            gapPayment || 0,
+            calculatedGapPayment,
             paymentMethod || 'cash',
             id
         ],

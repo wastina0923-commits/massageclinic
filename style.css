@@ -1,6 +1,6 @@
 /* --- Root Variables Update --- */
 :root {
-    --bg-color: #FFFDF6;       /* Cream background */
+    --bg-color: #F5F5dc;       /* background */
     --card-bg: #FFFFFF;        /* Content background */
     --primary-text: #4E342E;   /* Deep Brown */
     --secondary-text: #8D6E63; /* Muted Brown */
@@ -13,13 +13,13 @@
     --nav-text: #EFEBE9;       /* Light cream-grey for nav links */
 }
 
-/* --- Global Styles --- */
+/* --- General Styles --- */
 body {
     background-color: var(--bg-color);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--primary-text);
     margin: 0;
-    padding: 20px; /* 增加頁面邊距，讓 container 浮起來 */
+    padding: 20px; 
     display: flex;
     justify-content: center;
     line-height: 1.6;
@@ -33,8 +33,8 @@ body {
     padding: 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     border-radius: 15px;
-    overflow: hidden; /* 確保內部深色導覽列的圓角能與 container 貼合 */
-    position: relative;
+    overflow: hidden; /* ensure shadows don't cause scrollbars */
+    position: relative;  
 }
 
 /* --- Navbar & Logo (Full-width deep green bar) --- */
@@ -44,10 +44,9 @@ body {
     align-items: center;
     background-color: var(--nav-bg);
     
-    /* 讓背景顏色填滿整條並抵消 container padding */
+    /* fill the full width of the container, but negative margins pull it out to the edges */
     margin: -40px -40px 40px -40px; 
-    padding: 20px 40px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 40px; //** To match negative margins for consistent spacing */
 }
 
 .logo {
@@ -86,6 +85,7 @@ body {
     margin-left: 25px;
 }
 
+
 .logout-btn:hover {
     background: #b71c1c;
 }
@@ -93,8 +93,8 @@ body {
 /* --- Typography --- */
 header h1 {
     font-size: 2rem;
-    font-weight: 300;
-    margin-bottom: 10px;
+    font-weight: bold;
+    margin-bottom: -10px;
 }
 
 .subtitle {
