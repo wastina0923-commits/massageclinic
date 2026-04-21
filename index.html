@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Massage Clinic System - Home</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Home - Massage Clinic System</title> <link rel="stylesheet" href="style.css">
     <script src="auth-check.js"></script>
 </head>
 <body>
     <div class="container">
-        <nav class="navbar">
-            <img src="logo.png" alt="Clinic Logo" class="logo">
-            <div class="nav-links">
-                <a href="index.html" class="active">Home</a>
+        <nav class="navbar" aria-label="Main Navigation">
+            <img src="logo.png" alt="Relieve Massage Clinic Logo" class="logo"> <div class="nav-links">
+                <a href="index.html" class="active" aria-current="page">Home</a>
                 <a href="booking.html">Register Client</a>
                 <a href="customers.html">Customers</a>
                 <a href="dashboard.html">Earnings</a>
@@ -20,34 +18,38 @@
             </div>
         </nav>
 
-        <header class="dashboard-header">
-            <h2 id="live-date">Loading date...</h2>
-        </header>
+        <main id="main-content">
+            <header class="dashboard-header">
+                <h1 id="live-date">Loading date...</h1>
+            </header>
 
-        <section class="selection-area">
-            <h3>Assign Therapist for Today</h3>
-    
+            <section class="selection-area" aria-labelledby="assign-heading">
+                <h2 id="assign-heading">Assign Therapist for Today</h2>
+        
                 <div class="controls">
-                <select id="therapist-select">
-                    <option value="" disabled selected>Select a therapist...</option>
-                    <option value="Alice">Alice</option>
-                    <option value="Sunny">Sunny</option>
-                    <option value="Helen">Helen</option>
-                    <option value="Melody">Melody</option>
-                    <option value="Jacky">Jacky</option>
-                    <option value="Kelly">Kelly</option>
-                    <option value="Olie">Olie</option>
-                    <option value="Joanna">Joanna</option>
-                    <option value="Coco">Coco</option>
-                    <option value="Tina">Tina</option>
-                </select>
-                <button id="add-btn">Add to Shift</button>
+                    <label for="therapist-select" class="visually-hidden">Select a therapist to add to today's shift</label>
+                    <select id="therapist-select">
+                        <option value="" disabled selected>Select a therapist...</option>
+                        <option value="Alice">Alice</option>
+                        <option value="Sunny">Sunny</option>
+                        <option value="Helen">Helen</option>
+                        <option value="Melody">Melody</option>
+                        <option value="Jacky">Jacky</option>
+                        <option value="Kelly">Kelly</option>
+                        <option value="Olie">Olie</option>
+                        <option value="Joanna">Joanna</option>
+                        <option value="Coco">Coco</option>
+                        <option value="Tina">Tina</option>
+                    </select>
+                    <button id="add-btn">Add to Shift</button>
                 </div>
 
-                <div id="selected-list" class="status-grid">
-            </div>
-        </section>
+                <div id="selected-list" class="status-grid" aria-live="polite" aria-relevant="additions">
+                    </div>
+            </section>
+        </main>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

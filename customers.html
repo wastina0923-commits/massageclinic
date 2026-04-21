@@ -5,55 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Massage Clinic - Customer Records</title>
     <link rel="stylesheet" href="style.css">
-    <script src="auth-check.js"></script>
+    <script src="auth-check.js" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
     <div class="container">
-        <nav class="navbar">
-            <img src="logo.png" alt="Clinic Logo" class="logo">
+        <nav class="navbar" aria-label="Primary navigation">
+            <img src="logo.png" alt="Relieve Massage Clinic logo" class="logo">
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="booking.html">Register Client</a>
-                <a href="customers.html" class="active">Customers</a>
+                <a href="customers.html" class="active" aria-current="page">Customers</a>
                 <a href="dashboard.html">Earnings</a>
-                <button id="logout-btn" class="logout-btn">Logout</button>
+                <button id="logout-btn" class="logout-btn" type="button" aria-label="Log out">Logout</button>
             </div>
         </nav>
 
-        <header>
-            <h1>Customer Records</h1>
-            <p class="subtitle">Search and view past treatment history.</p>
-        </header>
+        <main id="main-content" tabindex="-1">
+            <header>
+                <h1>Customer Records</h1>
+                <p class="subtitle">Search and view past treatment history.</p>
+            </header>
 
-        <section class="search-box">
-            <input type="text" id="customerSearch" placeholder="Search by keywords...">
-            <button class="filter-btn" id="searchBtn">Search</button>
-        </section>
+            <section class="search-box" aria-labelledby="search-heading">
+                <h2 id="search-heading" class="sr-only">Search Records</h2>
+                <label for="customerSearch" class="sr-only">Search customer records by keywords</label>
+                <input 
+                    type="text" 
+                    id="customerSearch" 
+                    placeholder="Search by keywords..." 
+                    aria-describedby="search-help">
+                <span id="search-help" class="sr-only">Enter customer name, phone, therapist, treatment, or payment method to search.</span>
+                <button class="filter-btn" id="searchBtn" type="button">Search</button>
+            </section>
 
-        <section class="table-container">
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Duration</th>
-                        <th>Customer</th>
-                        <th>Therapist</th>
-                        <th>Treatment</th>
-                        <th>Total</th>
-                        <th>Insurance</th>
-                        <th>Gap</th>
-                        <th>Method</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="customerTableBody">
-                    <!-- Data will be loaded from database -->
-                </tbody>
-            </table>
-        </section>
+            <section class="table-wrapper" aria-labelledby="records-heading">
+                <h2 id="records-heading" class="sr-only">Customer Treatment Records</h2>
+                <div class="table-container">
+                    <table class="styled-table" role="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Therapist</th>
+                                <th scope="col">Treatment</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Insurance</th>
+                                <th scope="col">Gap</th>
+                                <th scope="col">Method</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody">
+                            <!-- Data will be loaded from database -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

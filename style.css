@@ -149,6 +149,14 @@ header h1 {
     transform: scale(1.2);
 }
 
+.checkbox-group legend {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-text);
+    margin-bottom: 12px;
+}
+
+
 /* Adjust for 4 columns in date/time section */
 .date-time-grid {
     grid-template-columns: 1fr 1fr;
@@ -201,7 +209,7 @@ input:focus, select:focus {
 }
 
 #therapist-select {
-    flex: 1; /* 讓選單佔滿剩餘空間 */
+    flex: 1; 
     padding: 10px;
     border-radius: 8px;
     border: 1px solid var(--accent-color);
@@ -395,13 +403,18 @@ input:focus, select:focus {
     border: 1px solid var(--accent-color);
 }
 
-.status-paid {
-    background-color: #FFF3E0;
-    color: #E65100;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 700;
+.payouts-table {
+    width: 100%;
+    table-layout: auto;      
+    min-width: 0 !important; 
+    white-space: normal;     
+    font-size: 14px;         
+}
+
+.payouts-table th, 
+.payouts-table td {
+    padding: 8px 4px;       
+    word-break: break-all;  
 }
 
 .dashboard-footer {
@@ -437,14 +450,14 @@ input:focus, select:focus {
 }
 
 .status-select.status-pending {
-    background-color: #FFF3E0 !important;
-    color: #E65100 !important;
+    background-color: #FFF3E0 ;
+    color: #E65100 ;
 }
 
 .status-select.status-paid {
-    background-color: #E8F5E8 !important;
-    color: #2E7D32 !important;
-}
+    background-color: #E8F5E8 ;
+    color: #2E7D32 ;
+} 
 
 /* --- Action Buttons --- */
 .action-btn {
@@ -494,11 +507,108 @@ input:focus, select:focus {
     color: #F57F17;
 }
 
+/* WCAG Accessibility Enhancements */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  background: #FFFFFF;
+  color: #000000;
+  padding: 10px 14px;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  left: 10px;
+  top: 10px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.styled-table th {
+  text-align: left;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* --- Print Friendly Styles --- */
 @media print {
+    
     .navbar, .submit-btn { display: none; }
     .container { box-shadow: none; max-width: 100%; border-radius: 0; padding: 0; }
     .navbar { margin: 0; }
+    .summary-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr !important; 
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .summary-card {
+        padding: 15px !important; 
+        border: 1px solid #ccc !important; 
+        break-inside: avoid; 
+    }
+
+    .summary-card .amount {
+        font-size: 1.4rem !important; 
+    }
 }
 
 /* --- Responsive Adjustments --- */
@@ -523,4 +633,107 @@ input:focus, select:focus {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Global responsive helpers (all pages) ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.styled-table {
+  min-width: 980px; /* keeps table readable; scroll on small screens */
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  body {
+    padding: 12px;
+  }
+
+  .container {
+    max-width: 100%;
+    min-height: auto;
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  .grid-inputs,
+  .date-time-grid,
+  .summary-grid,
+  .status-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    /* match .container padding: 24px (tablet/mobile block) */
+    margin: -24px -24px 20px -24px !important;
+    padding: 16px 24px !important;
+    width: calc(100% + 48px);
+    box-sizing: border-box;
+    align-items: center;
+  }
+
+  .nav-links {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .nav-links a,
+  .logout-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  #therapist-select,
+  #add-btn,
+  .submit-btn,
+  .filter-btn {
+    width: 100%;
+  }
+
+  h1, h2, h3 {
+    line-height: 1.25;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  body {
+    padding: 8px;
+  }
+
+  .container {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  input,
+  select,
+  button {
+    font-size: 16px; /* prevents iOS zoom */
+  }
 }

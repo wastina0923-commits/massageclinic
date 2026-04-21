@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const badge = card.querySelector('.badge');
                 if (badge) {
                     if (isInTreatment) {
-                        badge.textContent = 'In Treatment';
+                        badge.textContent = 'Unavailable';
                         badge.className = 'badge in-treatment';
                     } else {
                         badge.textContent = 'Available';
@@ -1016,13 +1016,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const stats = therapistStats[therapist];
                 const rate = commissionRates[therapist] || 0.45;
                 const earnings = stats.totalGenerated * rate;
+                const key = `status_${todayStr}_${therapist}`;
+                const savedStatus = localStorage.getItem(key) || 'pending';
+                const safeId = therapist.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-_]/g, '');
+
                 return `
                     <tr>
-                        <td>${therapist} (${(rate * 100).toFixed(0)}%)</td>
-                        <td>${stats.customers}</td>
+                        <th scope="row" id="therapist-${safeId}">${therapist} (${(rate * 100).toFixed(0)}%)</th>
                         <td>$${stats.totalGenerated.toFixed(2)}</td>
                         <td><strong>$${earnings.toFixed(2)}</strong></td>
-                        <td><select class="status-select" data-therapist="${therapist}"><option value="pending">Pending</option><option value="paid">Paid</option></select></td>
+                        <td>
+                            <label for="status-${safeId}" class="sr-only">Payout status for ${therapist}</label>
+                            <select
+                                id="status-${safeId}"
+                                class="status-select status-${savedStatus}"
+                                data-therapist="${therapist}"
+                                data-date="${todayStr}"
+                                aria-labelledby="therapist-${safeId}">
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                            </select>
+                        </td>
                     </tr>
                 `;
             }).join('');

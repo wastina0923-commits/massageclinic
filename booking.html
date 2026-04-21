@@ -5,169 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Massage Clinic - New Booking</title>
     <link rel="stylesheet" href="style.css">
-    <script src="auth-check.js"></script>
+    <script src="auth-check.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
     <div class="container">
-        <nav class="navbar">
-            <img src="logo.png" alt="Clinic Logo" class="logo">
+        <nav class="navbar" aria-label="Primary navigation">
+            <img src="logo.png" alt="Relieve Massage Clinic logo" class="logo">
             <div class="nav-links">
                 <a href="index.html">Home</a>
-                <a href="booking.html" class="active">Register Client</a>
+                <a href="booking.html" class="active" aria-current="page">Register Client</a>
                 <a href="customers.html">Customers</a>
                 <a href="dashboard.html">Earnings</a>
-                <button id="logout-btn" class="logout-btn">Logout</button>
+                <button id="logout-btn" class="logout-btn" type="button" aria-label="Log out">Logout</button>
             </div>
         </nav>
 
-        <header>
-            <h1><b>Register Client</b></h1>
-            <h2 id="live-date">Loading date...</h2>
-            <!-- <p class="subtitle">Please fill in the client and service details below.</p> -->
-        </header>
+        <main id="main-content" tabindex="-1">
+            <header>
+                <h1>Register Client</h1>
+                <p id="live-date" aria-live="polite">Loading date...</p>
+            </header>
 
-        <form id="bookingForm">
-            <section class="form-section"> 
-                <h3>1. Date & Time</h3> 
-                <div class="grid-inputs date-time-grid"> 
-                    <div class="input-group">  
-                        <label for="appointmentDate">Appointment Date</label> 
-                        <input type="date" id="appointmentDate" required> 
-                    </div> 
-                    <div class="input-group">
-                        <label for="appointmentTime">Start Time</label> 
-                        <input type="time" id="appointmentTime" required>
+            <form id="bookingForm" novalidate>
+                <section class="form-section" aria-labelledby="date-time-heading"> 
+                    <h2 id="date-time-heading">1. Date & Time</h2> 
+                    <div class="grid-inputs date-time-grid"> 
+                        <div class="input-group">  
+                            <label for="appointmentDate">Appointment Date</label> 
+                            <input type="date" id="appointmentDate" required autocomplete="off"> 
+                        </div> 
+                        <div class="input-group">
+                            <label for="appointmentTime">Start Time</label> 
+                            <input type="time" id="appointmentTime" required autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <label for="therapyDuration">Therapy Time (mins)</label> 
+                            <select id="therapyDuration" required>
+                                <option value="" disabled selected>Select duration...</option>
+                                <option value="10">10 mins</option>
+                                <option value="20">20 mins</option>
+                                <option value="30">30 mins</option>
+                                <option value="40">40 mins</option>
+                                <option value="45">45 mins</option>
+                                <option value="60">60 mins</option>
+                                <option value="90">90 mins</option>
+                                <option value="120">120 mins</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="endTime">End Time</label> 
+                            <input type="time" id="endTime" readonly class="readonly-input" aria-readonly="true">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section" aria-labelledby="customer-heading">
+                    <h2 id="customer-heading">2. Customer Information</h2>
+                    <div class="input-group"> 
+                        <label for="customerName">Full Name</label>
+                        <input type="text" id="customerName" placeholder="e.g. Tina Cai" required autocomplete="name"> 
+                    </div>
+                    <div class="grid-inputs">
+                        <div class="input-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="0412 345 678" required autocomplete="tel" inputmode="tel">
+                        </div>
+                        <div class="input-group">
+                            <label for="insurance">Insurance Card No.</label>
+                            <input type="text" id="insurance" placeholder="Optional" autocomplete="off">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-section" aria-labelledby="service-heading">
+                    <h2 id="service-heading">3. Service Details</h2>
+                    <div class="grid-inputs">
+                        <div class="input-group">
+                            <label for="therapist">Therapist</label>
+                            <select id="therapist" required>
+                                <option value="">Assign Therapist</option>
+                                <option value="Alice">Alice</option>
+                                <option value="Sunny">Sunny</option>
+                                <option value="Helen">Helen</option>
+                                <option value="Melody">Melody</option>
+                                <option value="Jacky">Jacky</option>
+                                <option value="Kelly">Kelly</option>
+                                <option value="Olie">Olie</option>
+                                <option value="Joanna">Joanna</option>
+                                <option value="Coco">Coco</option>
+                                <option value="Tina">Tina</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="treatment">Treatment Type</label>
+                            <select id="treatment" required>
+                                <option value="neck-shoulder">Neck & Shoulder</option>
+                                <option value="head-neck-shoulder">Head Neck & Shoulder</option>
+                                <option value="upper-body">Upper Body</option>
+                                <option value="lower-body">Lower Body</option>
+                                <option value="full-body">Full Body Massage</option>
+                                <option value="back-feet">Back & Feet</option>
+                                <option value="foot">Foot Massage</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <fieldset class="input-group checkbox-group">
+                        <legend>Additional Services</legend>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hot-stone" name="addons" value="hot-stone">
+                            <label for="hot-stone">+$5 Hot Stone Therapy</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="aroma" name="addons" value="aroma">
+                            <label for="aroma">+$5 Aroma Therapy</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cupping" name="addons" value="cupping">
+                            <label for="cupping">+$10 Cupping Therapy</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tiger-balm" name="addons" value="tiger-balm">
+                            <label for="tiger-balm">+$5 Tiger Balm</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="deep-tissue" name="addons" value="deep-tissue">
+                            <label for="deep-tissue">+$5 Deep Tissue</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="gua-sha" name="addons" value="gua-sha">
+                            <label for="gua-sha">+$10 Gua Sha</label>
+                        </div>
+                    </fieldset>
+                </section>
+
+                <section class="form-section" aria-labelledby="payment-heading">
+                    <h2 id="payment-heading">4. Payment</h2>
+                    <div class="grid-inputs">
+                        <div class="input-group">
+                            <label for="totalPrice">Total Amount ($)</label>
+                            <input type="number" id="totalPrice" min="0" step="0.01" required inputmode="decimal">
+                        </div>
+                        <div class="input-group">
+                            <label for="insuranceClaim">Insurance Claim ($)</label>
+                            <input type="number" id="insuranceClaim" min="0" step="0.01" required inputmode="decimal">
+                        </div>
+                        <div class="input-group">
+                            <label for="gapPayment">Gap ($) Paid by Client</label>
+                            <input type="number" id="gapPayment" readonly class="readonly-input" aria-readonly="true">
+                        </div>
                     </div>
                     <div class="input-group">
-                        <label for="therapyDuration">Therapy Time (mins)</label> 
-                        <select id="therapyDuration" required>
-                            <option value="" disabled selected>Select duration...</option>
-                            <option value="10">10 mins</option>
-                            <option value="20">20 mins</option>
-                            <option value="30">30 mins</option>
-                            <option value="40">40 mins</option>
-                            <option value="45">45 mins</option>
-                            <option value="60">60 mins</option>
-                            <option value="90">90 mins</option>
-                            <option value="120">120 mins</option>
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" required>
+                            <option value="" disabled selected hidden>Please Select...</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
                         </select>
                     </div>
-                    <div class="input-group">
-                        <label for="endTime">End Time</label> 
-                        <input type="time" id="endTime" readonly class="readonly-input">
-                    </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="form-section">
-                <h3>2. Customer Information</h3>
-                <div class="input-group"> 
-                    <label for="customerName">Full Name</label>
-                    <input type="text" id="customerName" placeholder="e.g. Tina Cai" required> 
-                </div>
-                <div class="grid-inputs">
-                    <div class="input-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" placeholder="0412 345 678" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="insurance">Insurance Card No.</label>
-                        <input type="text" id="insurance" placeholder="Optional">
-                    </div>
-                </div>
-            </section>
-
-            <section class="form-section">
-                <h3>3. Service Details</h3>
-                <div class="grid-inputs">
-                    <div class="input-group">
-                        <label for="therapist">Therapist</label>
-                        <select id="therapist" required>
-                            <option value="">Assign Therapist</option>
-                            <option value="Alice">Alice</option>
-                            <option value="Sunny">Sunny</option>
-                            <option value="Helen">Helen</option>
-                            <option value="Melody">Melody</option>
-                            <option value="Jacky">Jacky</option>
-                            <option value="Kelly">Kelly</option>
-                            <option value="Olie">Olie</option>
-                            <option value="Joanna">Joanna</option>
-                            <option value="Coco">Coco</option>
-                            <option value="Tina">Tina</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="treatment">Treatment Type</label>
-                        <select id="treatment">
-                            <option value="neck-shoulder">Neck & Shoulder</option>
-                            <option value="head-neck-shoulder">Head Neck & Shoulder</option>
-                            <option value="upper-body">Upper Body</option>
-                            <option value="lower-body">Lower Body</option>
-                            <option value="Full-body">Full Body Massage</option>
-                            <option value="back-feet">Back & Feet</option>
-                            <option value="foot">Foot Massage</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="addtional">Additional Services</label> 
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="hot-stone" name="addons" value="hot-stone">
-                                <label for="hot-stone">+$5 Hot Stone Therapy</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="aroma" name="addons" value="aroma">
-                                <label for="aroma">+$5 Aroma Therapy</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="cupping" name="addons" value="cupping">
-                                <label for="cupping">+$10 Cupping Therapy</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="tiger-balm" name="addons" value="tiger-balm">
-                                <label for="tiger-balm">+$5 Tiger Balm</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="deep-tissue" name="addons" value="deep-tissue">
-                                <label for="deep-tissue">+$5 Deep Tissue</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="gua-sha" name="addons" value="gua-sha">
-                                <label for="gua-sha">+$10 Gua Sha</label>
-                            </div>
-                </div>
-                    
-            </section>
-
-            <section class="form-section">
-                <h3>4. Payment</h3>
-                <div class="grid-inputs">
-                    <div class="input-group">
-                        <label for="totalPrice">Total Amount ($)</label>
-                        <input type="number" id="totalPrice" min="0" step="0.01" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="insuranceClaim">Insurance Claim ($)</label>
-                        <input type="number" id="insuranceClaim" min="0" step="0.01" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="gapPayment">Gap ($) Paid by Client</label>
-                        <input type="number" id="gapPayment" readonly class="readonly-input">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="paymentMethod">Payment Method</label>
-                    <select id="paymentMethod" required>
-                        <option value="" disabled selected hidden>Please Select...</option>
-                        <option value="cash">Cash</option>
-                        <option value="card">Card</option>
-                    </select>
-                </div>
-            </section>
-
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </main>
     </div>
-    
-    <script src="script.js"></script>
 </body>
 </html>

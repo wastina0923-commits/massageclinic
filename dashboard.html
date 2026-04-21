@@ -5,67 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Massage Clinic - Financial Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <script src="auth-check.js"></script>
+    <script src="auth-check.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
     <div class="container">
-        <nav class="navbar">
-            <img src="logo.png" alt="Clinic Logo" class="logo">
+        <nav class="navbar" aria-label="Primary navigation">
+            <img src="logo.png" alt="Relieve Massage Clinic logo" class="logo">
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="booking.html">Register Client</a>
                 <a href="customers.html">Customers</a>
-                <a href="dashboard.html" class="active">Earnings</a>
-                <button id="logout-btn" class="logout-btn">Logout</button>
+                <a href="dashboard.html" class="active" aria-current="page">Earnings</a>
+                <button id="logout-btn" class="logout-btn" type="button" aria-label="Log out">Logout</button>
             </div>
         </nav>
 
-        <header>
-            <h1>Daily Earnings</h1>
-            <p class="subtitle" id="dashboard-date">Financial summary for today</p>
-        </header>
+        <main id="main-content" tabindex="-1">
+            <header>
+                <h1>Daily Earnings</h1>
+                <p class="subtitle" id="dashboard-date" aria-live="polite">Financial summary for today</p>
+            </header>
 
-        <section class="summary-grid">
-            <div class="summary-card highlight-card">
-                <h3>Total Revenue</h3>
-                <p class="amount" id="totalRevenue">$0.00</p>
-                <small>Gross sales</small>
-            </div>
-            <div class="summary-card highlight-card">
-                <h3>Total Gap (Cash/Card)</h3>
-                <p class="amount" id="totalGap">$0.00</p>
-                <small>Actual money received in-store</small>
-            </div>
-            <div class="summary-card highlight-card">
-                <h3>Insurance Claims</h3>
-                <p class="amount" id="totalInsurance">$0.00</p>
-                <small>Medicare</small>
-            </div>
-        </section>
+            <section class="summary-grid" aria-labelledby="summary-heading">
+                <h2 id="summary-heading" class="sr-only">Summary</h2>
 
-        <section class="staff-commissions">
-            <h3>Therapist Payouts</h3>
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Therapist</th>
-                        <th>Customers</th>
-                        <th>Total Generated</th>
-                        <th>Net Earnings</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="earningsTableBody">
-                    <!-- Data will be loaded dynamically -->
-                </tbody>
-            </table>
-        </section>
+                <div class="summary-card highlight-card">
+                    <h3>Total Revenue</h3>
+                    <p class="amount" id="totalRevenue" aria-live="polite">$0.00</p>
+                    <small>Gross sales</small>
+                </div>
 
-        <footer class="dashboard-footer">
-            <button class="submit-btn" onclick="window.print()">Print Daily Report</button>
-        </footer>
+                <div class="summary-card highlight-card">
+                    <h3>Total Gap</h3>
+                    <p class="amount" id="totalGap" aria-live="polite">$0.00</p>
+                    <small>Actual received in-store including cash and card</small>
+                </div>
+
+                <div class="summary-card highlight-card">
+                    <h3>Insurance Claims</h3>
+                    <p class="amount" id="totalInsurance" aria-live="polite">$0.00</p>
+                    <small>Medicare</small>
+                </div>
+            </section>
+
+            <section class="staff-commissions" aria-labelledby="payouts-heading" role="region">
+                <h2 id="payouts-heading">Therapist Payouts</h2>
+                <p id="payouts-help" class="sr-only">
+                    Table of therapist payout totals. Use the Status dropdown in each row to mark payout state.
+                </p>
+
+                <div class="table-container" aria-describedby="payouts-help">
+                    <table class="styled-table payouts-table">
+                        <caption class="sr-only">Therapist payout status and net earnings</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Therapist</th>
+                                <th scope="col">Total Generated</th>
+                                <th scope="col">Net Earnings</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="earningsTableBody" aria-live="polite" aria-atomic="false">
+                            <!-- Data will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer class="dashboard-footer">
+                <button class="submit-btn" type="button" aria-label="Print daily report" onclick="window.print()">
+                    Print Daily Report
+                </button>
+            </footer>
+        </main>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
