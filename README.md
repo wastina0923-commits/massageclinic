@@ -37,5 +37,5 @@ Navigate between pages:
 
 ### 4. Login credentials
 
-user: admin
-password: admin123
+-user: admin
+-password: admin123
