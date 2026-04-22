@@ -32,7 +32,7 @@ Open your browser and go to `http://localhost:3000`
 Navigate between pages:
 - **Home** - Assign therapists to shifts for today
 - **Register Clients** - Register clients in form
-- **Customers** - View all registered customers
+- **Customers** - View all registered customers and able to edit
 - **Earnings** - Track daily earnings and salary status
 
 ### 4. Login credentials
